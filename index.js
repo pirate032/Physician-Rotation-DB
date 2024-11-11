@@ -52,14 +52,9 @@ function findNextPhys (physicians) {
     console.log("physician list before: " + physicians)
     let phys1 = ""
     let assigned = false
-    //go thru list of physicians and call function to manipulate the array
-    for (let i=0; i<physicians.length; i++) {
-        phys1 = physicians[i]   //name of next physician
-        assigned = manipulateArray(phys1, i, physicians) 
-            if (assigned) {
-                break
-            }   
-    }
+    //because of how the array is manipulated, first phys will be next
+    phys1 = physicians[0]   //name of next physician
+    assigned = manipulateArray(phys1, 0, physicians)
 }
 
 function manipulateArray(phys, index, arr) {
