@@ -13,8 +13,13 @@
   </head>
 
   <body>
-    <h3>Procedure Request</h3>
-    <div id="form-section">
+    <section class="titles">
+      <h2>CAMC Vascular Surgery</h2>
+      <h3>Procedure Request</h3>
+    </section>
+
+    <section class="dropdown">
+      <div id="form-section">
         <form>
             <label id="test-label" for=“test”>Select Diagnosis:</label>
             <select id="test">
@@ -51,14 +56,19 @@
                 <option value="vertebralArteryStenosis">Vertebral Artery Stenosis</option>
                 <option value="williamsSnydrome">Williams Syndrome</option>   
             </select>
+            
         </form>
-    </div>
+        <button id="search-btn">Search Physicians</button>
+     </div>
+    </section>
     
-    <div id="bottom-section">
-        <button id="search-btn">Search</button>
+    <section class="data">
+      <div id="bottom-section">
         <p id=results-el>Results:</p>
         <p id="physName"></p>
-    </div>
+      </div>
+    </section>
+    
     
 
     <script type="module" src="index.js"></script>
