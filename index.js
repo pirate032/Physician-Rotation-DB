@@ -6,7 +6,8 @@ import { getDatabase,
         push,
         onValue,
         remove,
-        query } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"
+        query,
+        set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -122,4 +123,6 @@ function renderImage() {
         physImage.src = "/images/Ali AbuRahma.png"
     }
 }
-  //initializeArray()
+
+//can move initializeArray function here from data.js if the database needs to be recreated
+//initializeArray()
