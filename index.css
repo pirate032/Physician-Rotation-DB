@@ -87,3 +87,6 @@ select {
     font-size: 18px;
     margin-top: 0px;
 }
+#phys-image {
+    width: 100px;
+}

@@ -24,70 +24,74 @@ const referenceInDB = ref(database, "physician-tracker")
 const searchBtn = document.getElementById("search-btn")
 const resultsEl = document.getElementById("results-el")
 const nameEl = document.getElementById("physName")
+const physImage = document.getElementById("phys-image")
+const test = document.getElementById("test")
 
 let chdData = []
 let searchArray = []
-let tempPhysArray = []
-let tempDx = ''
+let tempPhysArray = []  //physician array after manipulation
+let tempDx = '' //value of chosen diagnosis
 let tempIndex = -1
 let physicians = []  //array from snapshot values
+let phys1 = ''
 
+//This gets the snapshot of the database every time it changes
 onValue(referenceInDB, function(snapshot) {
     const snapshotDoesExist = snapshot.exists()
     if (snapshotDoesExist) {
         const snapshotValues = snapshot.val()
         physicians = Object.values(snapshotValues)
         searchArray = physicians
-        console.log(physicians)
     }
     snapshot.forEach((childSnapshot) => {
         const childData = childSnapshot.val();
-        
         chdData = childData
-        console.log(chdData)
     });
     
+})
+
+test.addEventListener("change", function(){
+    //Blank out results after clicking a new diagnosis
+    resultsEl.textContent = 'Please click Search:'
+    nameEl.textContent = ''
+    physImage.src = ''
+    physImage.style.visibility = "hidden"
 })
 
 /* == UI - Event Listeners == */
 searchBtn.addEventListener("click", function() {
     //get the value of the test/diagnosis selected
-    let diag = document.getElementById("test").value
-    tempDx = diag
+    tempDx = document.getElementById("test").value
 
     //search for the list of physicians that do the chosen test/diagnosis
     for (let i=0; i<chdData.length; i++) { 
-        if(chdData[i].dx === diag) {
+        if(chdData[i].dx === tempDx) {
             tempIndex = i
             
             //call function to get physician name and manipulate array
-            findNextPhys(chdData[i].phys)   //this works as is
+            findNextPhys(chdData[i].phys) 
             
             //this version of physicians holds the new physician object for the dx chosen
             const queryRef = query(ref(database, 'physicians/'))
            
-            console.log(chdData)  //the whole modified array minus the key
             //remove the whole array and rewrite it
             remove(referenceInDB)
             push(referenceInDB, chdData)
             break
         }
-    }
-    
-    //tempDx has the value chosen and searchArray has the correct phys list here
-    //tempPhysArray has the phys array that is correct after manipulation
+    }   
 } )
 
 function findNextPhys (physFind) {
-
-    let phys1 = ""
     let assigned = false
-    //because of how the array is manipulated, first phys will be next
-    phys1 = physFind[0]   //name of next physician
+  
+    //name of next physician, first phys will be next
+    phys1 = physFind[0]
+
+    //get the physician's image here
+    renderImage()
+
     assigned = manipulateArray(phys1, 0, physFind)
-    if(assigned) {
-        //not using this right now
-    }
 }
 
 function manipulateArray(phys, index, arr) {
@@ -100,40 +104,22 @@ function manipulateArray(phys, index, arr) {
     return true
 }
 
-// function initializeArray() {
-//     push(referenceInDB, [
-//         {dx:'AAA',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'bowHunter',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'carotidArteryStenosis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Ali AbuRahma","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'carotidBodyTumor',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'celiacArteryCompressionSyndrome',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'claudication',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'disectionChronic',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'DVT',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'ESRD_PCS_AVF_AVGS',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'hdAccess',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'iliacAneurysm',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'lymphedema',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'mayThurner',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'mesentericCeliacStenosis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'nutcrackerSyndrome',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'peripheralArteryOcclusiveDisease',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'poplitealAneurysm',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'pseudoaneurysm',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'raynauds',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'renalArteryStenosis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'renalFMD',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'splenicAneurysm',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'subclavianSteal',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'subclavianArteryStenosis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'temporalArteritis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'varicoseVeins',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'vasculitis',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'venousInsufficiency',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'vertebralArteryStenosis',phys:["Mohammad Eslami","Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]},
-//         {dx:'williamsSnydrome',phys:["Catherine Go","Adham Abou-Ali","Matthew Beasley","Andrew Lee","Zach AbuRahma"]}
-//     ]
-//     ) 
-// }
-
+function renderImage() {
+    physImage.style.visibility = "visible"
+    if(phys1 === 'Mohammad Eslami') {
+        physImage.src = "/images/Mohammad Eslami.png"
+    } else if(phys1 === 'Adham Abou-Ali') {
+        physImage.src = "/images/Adham Abou-Ali.png"
+    } else if(phys1 === 'Andrew Lee') {
+        physImage.src = "/images/Andrew Lee.png"
+    } else if(phys1 === 'Catherine Go') {
+        physImage.src = "/images/Catherine Go.png"
+    } else if(phys1 === 'Matthew Beasley') {
+        physImage.src = "/images/Matthew Beasley.png"
+    } else if(phys1 === 'Zach AbuRahma') {
+        physImage.src = "/images/Zach AbuRahma.png"
+    } else if(phys1 === 'Ali AbuRahma') {
+        physImage.src = "/images/Ali AbuRahma.png"
+    }
+}
   //initializeArray()
