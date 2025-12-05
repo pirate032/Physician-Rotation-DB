@@ -53,7 +53,9 @@ onValue(referenceInDB, function(snapshot) {
 
 test.addEventListener("change", function(){
     //Blank out results after clicking a new diagnosis
-    resultsEl.textContent = 'Please click Search:'
+    console.log(test.value)
+    test.value !== 'None' ? searchBtn.disabled = false : searchBtn.disabled = true
+    test.value !== 'None' ? resultsEl.textContent = 'Please click Search Physicians.' : resultsEl.textContent = 'Please select a diagnosis.'
     nameEl.textContent = ''
     physImage.src = ''
     physImage.style.visibility = "hidden"

@@ -63,6 +63,12 @@ select {
 #search-btn:hover {
     background-color: #cbf3f0;
 }
+#search-btn:disabled {
+    background-color: rgb(147, 145, 145);
+    color: rgb(228, 225, 225);
+    border: 1px solid darkgrey;
+    cursor: not-allowed;
+}
 
 #bottom-section {
     display: flex;
